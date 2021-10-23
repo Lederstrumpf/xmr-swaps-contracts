@@ -97,8 +97,8 @@ contract Swap {
     function verifySecret(uint256 _s, bytes32 pubKey) public view {
         (uint256 px, uint256 py) = ed25519.derivePubKey(_s);
         uint256 canonical_p = py | ((px >> (8 * 30 + 1)) & 0x80);
-        console.log("%s", uint2hexstr(canonical_p));
-        console.log("%s", uint2hexstr(uint256(pubKey)));
+        console.log("derived: %s", uint2hexstr(canonical_p));
+        console.log("provided: %s", uint2hexstr(uint256(pubKey)));
         require(
             bytes32(canonical_p) == pubKey,
             "provided secret does not match the expected pubKey"
