@@ -97,11 +97,32 @@ contract Swap {
     function verifySecret(uint256 _s, bytes32 pubKey) public view {
         (uint256 px, uint256 py) = ed25519.derivePubKey(_s);
         uint256 canonical_p = py | ((px >> (8 * 30 + 1)) & 0x80);
-        console.log("%s", canonical_p);
-        console.log("%s", uint256(pubKey));
+        console.log("%s", uint2hexstr(canonical_p));
+        console.log("%s", uint2hexstr(uint256(pubKey)));
         require(
             bytes32(canonical_p) == pubKey,
             "provided secret does not match the expected pubKey"
         );
+    }
+
+    function uint2hexstr(uint256 i) public pure returns (string memory) {
+        if (i == 0) return "0";
+        uint256 j = i;
+        uint256 length;
+        while (j != 0) {
+            length++;
+            j = j >> 4;
+        }
+        uint256 mask = 15;
+        bytes memory bstr = new bytes(length);
+        uint256 k = length;
+        while (i != 0) {
+            uint256 curr = (i & mask);
+            bstr[--k] = curr > 9
+                ? bytes1(uint8(55 + curr))
+                : bytes1(uint8(48 + curr)); // 55 = 65 - 10
+            i = i >> 4;
+        }
+        return string(bstr);
     }
 }
