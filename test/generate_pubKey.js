@@ -5,7 +5,12 @@ describe("Swap", function () {
   const s_a = '34c388ea5bdd494b10b1eaebfa68564463947ee48efe69c520d4a1fadc550c04';
   const s_b = 'a6e51afb9662bf2173d807ceaf88938d09a82d1ab2cea3eeb1706eeeb8b6ba03';
   const pubKey_a = 'e32ad36ce8e59156aa416da9c9f41a7abc59f6b5f1dd1c2079e8ff4e14503090';
+  const pubKey_a_x = '4e965e17abcaa1a045f2b035415d1841d750bc1f06343db49814e8eeb5f0e156';
+  const pubKey_a_y = '8dc9804f77b5de5aa5fe290023890620b20164330f7197c6d764106793333abe';
+
   const pubKey_b = '57edf916a28c2a0a172565468564ab1c5c217d33ea63436f7604a96aa28ec471';
+  const pubKey_b_x = 'ae77551150e4fe387f786c74b5904348532400cb529b075e0c47f81346809f84';
+  const pubKey_b_y = 'b8246682fc3702d6f033a8ccb0a086a441c638884a23d3c4c506b7258e9c8721';
 
   function toHexString(byteArray) {
     return Array.from(byteArray, function (byte) {
@@ -26,16 +31,16 @@ describe("Swap", function () {
     // console.log(toHexString(s_b));
 
     const Swap = await ethers.getContractFactory("Swap");
-    const swap = await Swap.deploy(hexToBytes(pubKey_b).reverse(), hexToBytes(pubKey_a).reverse());
+    const swap = await Swap.deploy(hexToBytes(pubKey_b_x).reverse(), hexToBytes(pubKey_b_y).reverse(), hexToBytes(pubKey_a_x).reverse(), hexToBytes(pubKey_a_y).reverse());
     await swap.deployed();
 
-    await swap.verifySecret(hexToBytes(s_a).reverse(), hexToBytes(pubKey_a).reverse());
-    await swap.verifySecret(hexToBytes(s_b).reverse(), hexToBytes(pubKey_b).reverse());
+    await swap.verifySecret(hexToBytes(s_a).reverse(), hexToBytes(pubKey_a_x).reverse(), hexToBytes(pubKey_a_y).reverse());
+    await swap.verifySecret(hexToBytes(s_b).reverse(), hexToBytes(pubKey_b_x).reverse(), hexToBytes(pubKey_b_y).reverse());
   });
 
   it("Should selfdestruct", async function () {
     const Swap = await ethers.getContractFactory("Swap");
-    const swap = await Swap.deploy(hexToBytes(pubKey_b).reverse(), hexToBytes(pubKey_a).reverse(), { value: 10 });
+    const swap = await Swap.deploy(hexToBytes(pubKey_b_x).reverse(), hexToBytes(pubKey_b_y).reverse(), hexToBytes(pubKey_a_x).reverse(), hexToBytes(pubKey_a_y).reverse(), { value: 10 });
     await swap.deployed();
 
     await swap.set_ready();
